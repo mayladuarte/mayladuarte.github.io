@@ -720,14 +720,86 @@ body {
 </div>
 
 <div class="footer">
-  Conteúdo de entretenimento adulto · +18<br>
   © Mayla Duarte · Todos os direitos reservados
 </div>
 
+<style>
+.overlay-age {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+.overlay-age.active { display: flex; }
+.age-modal {
+  background: #130f1e;
+  border: 1px solid #7b5ea7;
+  border-radius: 20px;
+  padding: 32px 24px;
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+}
+.age-modal h2 { color: #f0eaf8; font-size: 20px; margin-bottom: 12px; }
+.age-modal p { color: #c4b8e0; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+.age-btn-yes {
+  display: block; width: 100%; padding: 14px;
+  background: #7b5ea7; color: #fff; border: none;
+  border-radius: 50px; font-size: 15px; font-weight: 700;
+  cursor: pointer; margin-bottom: 10px; letter-spacing: 0.5px;
+}
+.age-btn-no {
+  display: block; width: 100%; padding: 12px;
+  background: transparent; color: #7a6a9a; border: 1px solid #2e2248;
+  border-radius: 50px; font-size: 13px; cursor: pointer;
+}
+</style>
+
+<div class="overlay-age" id="ageOverlay">
+  <div class="age-modal">
+    <h2>⚠️ Conteúdo para maiores</h2>
+    <p>Este grupo contém conteúdo adulto. Ao continuar, você declara ter <strong>18 anos ou mais</strong> e concorda em acessar este tipo de material.</p>
+    <button class="age-btn-yes" id="ageYes">✓ Sim, tenho 18 anos ou mais</button>
+    <button class="age-btn-no" id="ageNo">✗ Não, sair</button>
+  </div>
+</div>
+
 <script>
+// FAQ
 document.querySelectorAll('.faq-q').forEach(q => {
   q.addEventListener('click', () => {
     q.closest('.faq-item').classList.toggle('open');
+  });
+});
+
+// Popup de confirmação de idade
+var telegramUrl = 'https://t.me/MaylaDuarteVIP';
+var pendingUrl = null;
+
+function showAgePopup(url) {
+  pendingUrl = url;
+  document.getElementById('ageOverlay').classList.add('active');
+}
+
+document.getElementById('ageYes').addEventListener('click', function() {
+  document.getElementById('ageOverlay').classList.remove('active');
+  if (pendingUrl) window.open(pendingUrl, '_blank');
+});
+
+document.getElementById('ageNo').addEventListener('click', function() {
+  document.getElementById('ageOverlay').classList.remove('active');
+  pendingUrl = null;
+});
+
+// Interceptar todos os links do Telegram
+document.querySelectorAll('a[href*="t.me"]').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    showAgePopup(this.href);
   });
 });
 </script>
